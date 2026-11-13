@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-navy: #101C35;
+    --color-burgundy: #641E35;
+    --color-gold: #D6B875;
+    --color-gold-light: #F2DEAA;
+    --color-gold-dark: #A8863A;
+    --color-black: #08090D;
+    --color-ivory: #F5F1E8;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #08090D;
+    color: #F5F1E8;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-serif, .font-cinzel {
+    font-family: 'Cinzel', Georgia, serif;
+    letter-spacing: 0.02em;
+  }
+}
+
+/* Custom scrollbar matching champagne gold and navy */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #08090D;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e2c4d;
+  border-radius: 4px;
+  border: 1px solid rgba(214, 184, 117, 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D6B875;
+}
+
+/* Subtle glow effects */
+.gold-glow {
+  text-shadow: 0 0 25px rgba(214, 184, 117, 0.45);
+}
+
+.gold-box-glow {
+  box-shadow: 0 0 35px -5px rgba(214, 184, 117, 0.25);
+}
+
+.subtle-glass {
+  background: rgba(16, 28, 53, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(214, 184, 117, 0.18);
+}
+
+.burgundy-glass {
+  background: linear-gradient(135deg, rgba(100, 30, 53, 0.6) 0%, rgba(16, 28, 53, 0.75) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(214, 184, 117, 0.22);
+}
