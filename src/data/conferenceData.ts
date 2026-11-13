@@ -131,7 +131,7 @@ export const FOUNDERS: FounderProfile[] = [
       'Committed to Nurturing Next-Generation Global Decision-Makers',
     ],
     initials: 'CF',
-    photo: '', // Editable in Admin
+    photo: './assets/aistudio/co_founder_0a58e130.jpeg', // Editable in Admin
   },
 ];
 

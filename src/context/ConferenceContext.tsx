@@ -50,7 +50,15 @@ export function ConferenceProvider({ children }: { children: React.ReactNode }) 
   const [founders, setFounders] = useState<FounderProfile[]>(() => {
     try {
       const saved = localStorage.getItem(`${STORAGE_KEY}_FOUNDERS`);
-      return saved ? JSON.parse(saved) : DEFAULT_FOUNDERS;
+      if (!saved) return DEFAULT_FOUNDERS;
+      const parsed: FounderProfile[] = JSON.parse(saved);
+      return parsed.map((f) => {
+        const def = DEFAULT_FOUNDERS.find((d) => d.id === f.id);
+        return {
+          ...f,
+          photo: f.photo || def?.photo || '',
+        };
+      });
     } catch {
       return DEFAULT_FOUNDERS;
     }
