@@ -114,7 +114,7 @@ export const FOUNDERS: FounderProfile[] = [
       'Visionary of Holistic Leadership: Kindness Alongside Conviction',
     ],
     initials: 'FD',
-    photo: '', // Editable in Admin
+    photo: './assets/aistudio/founder__9ed592d6.jpeg', // Editable in Admin
   },
   {
     id: 'co-founder',
