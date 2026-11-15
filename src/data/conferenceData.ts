@@ -107,7 +107,7 @@ export interface RegistrationTier {
   formType: 'delegate' | 'delegation' | 'secretariat';
 }
 
-export const OFFICIAL_LOGO_URL = './assets/aistudio/Gemini_Generated_Image_9j9k5v9j9k5v9j9k_6db230c7.png';
+export const OFFICIAL_LOGO_URL = './assets/aistudio/WhatsApp_Image_2026-11-11_at_2.19.49_PM_d59980f4.jpeg';
 
 export const BRAND_DATA = {
   name: 'HORIZON MUN',

@@ -38,14 +38,14 @@ export default function HorizonLogo({
 
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      {/* Official Horizon MUN Circular Medallion Logo */}
+      {/* Official Horizon MUN Emblem */}
       <div
-        className={`relative ${iconSizes[size]} shrink-0 rounded-full overflow-hidden border border-[#D6B875]/45 bg-[#08090D] shadow-[0_0_16px_rgba(214,184,117,0.35)] flex items-center justify-center`}
+        className={`relative ${iconSizes[size]} shrink-0 rounded-xl overflow-hidden border border-[#D6B875]/45 bg-[#071122] shadow-[0_0_16px_rgba(214,184,117,0.35)] flex items-center justify-center`}
       >
         <img
           src={imgSrc}
           alt="HORIZON MUN Official Logo"
-          className="w-full h-full object-cover scale-[1.05]"
+          className="w-full h-full object-cover"
           onError={() => {
             if (imgSrc !== OFFICIAL_LOGO_URL) {
               setImgSrc(OFFICIAL_LOGO_URL);

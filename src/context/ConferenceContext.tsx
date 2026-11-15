@@ -50,7 +50,10 @@ export function ConferenceProvider({ children }: { children: React.ReactNode }) 
       if (parsed.dates === 'January 3 – 5, 2027') {
         parsed.dates = DEFAULT_BRAND_DATA.dates;
       }
-      if (!parsed.logoUrl) {
+      if (
+        !parsed.logoUrl ||
+        parsed.logoUrl === './assets/aistudio/Gemini_Generated_Image_9j9k5v9j9k5v9j9k_6db230c7.png'
+      ) {
         parsed.logoUrl = DEFAULT_BRAND_DATA.logoUrl;
       }
       if (!parsed.aboutText) {
