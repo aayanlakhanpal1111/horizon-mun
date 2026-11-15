@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Shield, Target, Landmark, Sparkles, BookOpen, Scale, ArrowRight } from 'lucide-react';
 import { BRAND_DATA } from '../data/conferenceData';
+import { useConference } from '../context/ConferenceContext';
 
 interface InteractiveCardProps {
   icon: React.ReactNode;
@@ -79,6 +80,7 @@ function PerspectiveCard({ icon, title, category, description, highlights }: Int
 }
 
 export default function AboutSection() {
+  const { brandData } = useConference();
   return (
     <section id="about" className="relative py-28 px-6 bg-[#08090D] overflow-hidden">
       {/* Background Architectural Ambient Shapes */}
@@ -97,11 +99,8 @@ export default function AboutSection() {
             Beyond Borders. Beyond Perspectives.
           </h2>
 
-          <p className="text-base sm:text-lg text-[#F5F1E8]/80 leading-relaxed font-normal">
-            Horizon MUN is not simply another parliamentary simulation; it is a crucible where
-            ambitious young minds converge to deconstruct the geopolitical fault lines of our era.
-            Guided by principles of rigorous scholarship, authentic multilateralism, and mutual respect,
-            delegates develop the diplomatic acumen required to govern tomorrow&apos;s world.
+          <p className="text-base sm:text-lg text-[#F5F1E8]/85 leading-relaxed font-normal">
+            {brandData.aboutText || BRAND_DATA.aboutText}
           </p>
         </div>
 

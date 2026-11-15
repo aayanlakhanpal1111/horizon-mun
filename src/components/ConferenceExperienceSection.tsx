@@ -25,7 +25,7 @@ export default function ConferenceExperienceSection() {
           </h2>
 
           <p className="text-base text-[#F5F1E8]/75 leading-relaxed font-normal">
-            Immerse yourself in three days of intense oratory, high-stakes caucus coalitions,
+            Immerse yourself in a full day of intense oratory, high-stakes caucus coalitions,
             executive gala celebrations, and lifelong diplomatic friendships.
           </p>
         </div>
@@ -101,7 +101,7 @@ export default function ConferenceExperienceSection() {
               Diplomatic Foyer Receptions & Delegate Gala
             </h4>
             <p className="text-xs sm:text-sm text-[#F5F1E8]/80 leading-relaxed font-normal">
-              Conference days conclude with formal evening social events designed to cement bonds
+              The conference day concludes with a formal evening social gathering designed to cement bonds
               with international peers, debate unmoderated strategies, and celebrate youth solidarity.
             </p>
           </div>

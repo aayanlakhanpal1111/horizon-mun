@@ -31,6 +31,7 @@ export interface Committee {
 
 export interface FounderProfile {
   id: string;
+  name: string;
   role: string;
   title: string;
   quoteTitle: string;
@@ -40,6 +41,32 @@ export interface FounderProfile {
   initials: string;
   photo?: string;
 }
+
+export interface GlobeSettings {
+  autoRotate: boolean;
+  rotationSpeed: number;
+  showCountryBorders: boolean;
+  showFlags: boolean;
+  showAtmosphere: boolean;
+  showStars: boolean;
+  enableZoom: boolean;
+  initialZoom: number;
+  focusZoom: number;
+  highlightColor: string;
+}
+
+export const DEFAULT_GLOBE_SETTINGS: GlobeSettings = {
+  autoRotate: true,
+  rotationSpeed: 0.25,
+  showCountryBorders: true,
+  showFlags: true,
+  showAtmosphere: true,
+  showStars: true,
+  enableZoom: true,
+  initialZoom: 5.8,
+  focusZoom: 3.7,
+  highlightColor: '#D6B875',
+};
 
 export interface FeaturePillar {
   id: string;
@@ -80,11 +107,15 @@ export interface RegistrationTier {
   formType: 'delegate' | 'delegation' | 'secretariat';
 }
 
+export const OFFICIAL_LOGO_URL = './assets/aistudio/Gemini_Generated_Image_9j9k5v9j9k5v9j9k_6db230c7.png';
+
 export const BRAND_DATA = {
   name: 'HORIZON MUN',
   tagline: 'Where Diplomacy Meets Possibility.',
   heroSubtitle: 'Empowering the next generation of global leaders.',
-  dates: 'January 3 – 5, 2027',
+  aboutText:
+    'At Horizon MUN, we envision a generation empowered by knowledge, guided by integrity, and united by the pursuit of meaningful change. We aspire to cultivate intellectual curiosity, diplomatic acumen, critical thinking, and exemplary leadership. Through constructive discourse and the exchange of diverse perspectives, we seek to nurture mutual respect, bridge differences, and inspire solutions to pressing challenges. Our mission transcends debate; we strive to empower voices, challenge conventions, foster global consciousness, and transform the ideals of diplomacy into a lasting commitment to progress, peace, and collective responsibility.',
+  dates: 'January 3, 2027 (One-Day Summit)',
   countdownTarget: '2027-01-03T09:00:00', // Countdown target to 3 Jan
   location: 'International Diplomatic Hall & Virtual Hybrid Chambers',
   edition: '2027 Annual Summit',
@@ -96,41 +127,34 @@ export const BRAND_DATA = {
   email: 'secretariat@horizonmun.org',
   instagram: '@horizonmun_official',
   linkedin: 'linkedin.com/company/horizon-mun',
+  logoUrl: OFFICIAL_LOGO_URL,
 };
 
 export const FOUNDERS: FounderProfile[] = [
   {
     id: 'founder',
+    name: 'Ayaan Chawla',
     role: 'Founder',
-    title: 'Founder & Visionary Lead, Horizon MUN',
+    title: 'Founder',
     quoteTitle: 'About the Founder',
-    experienceBadge: '25+ MUN Conferences & Internships Veteran',
+    experienceBadge: '',
     statement:
       'As the Founder of Horizon MUN, drawing upon my experience of 25+ Model United Nations conferences and internships, I aspire to establish a platform where knowledge transcends boundaries, diplomacy fosters understanding, and kindness prevails alongside conviction. My vision is to empower young voices, cultivate intellectual curiosity, nurture confident leaders, and instil the values of mutual respect, critical thinking, and global awareness, making every delegate’s experience meaningful, transformative, and truly unforgettable.',
-    highlights: [
-      '25+ Model United Nations & Youth Diplomatic Conferences Circuit Veteran',
-      'Distinguished International Policy & Diplomatic Internship Portfolio',
-      'Champion of Accessible, High-Rigor Youth Statecraft & Merit Awards',
-      'Visionary of Holistic Leadership: Kindness Alongside Conviction',
-    ],
-    initials: 'FD',
+    highlights: [],
+    initials: 'AC',
     photo: './assets/aistudio/founder__9ed592d6.jpeg', // Editable in Admin
   },
   {
     id: 'co-founder',
+    name: 'Aayan Sharma',
     role: 'Co-Founder',
-    title: 'Co-Founder & Strategic Director, Horizon MUN',
+    title: 'Co-Founder',
     quoteTitle: 'About the Co-Founder',
-    experienceBadge: 'Diplomatic Strategist & Crisis Specialist',
+    experienceBadge: '',
     statement:
       'A passionate MUN enthusiast, aspiring leader, and strategic thinker, serving as the Co-Founder of Horizon Model United Nations. With a deep interest in diplomacy, international relations, public speaking, and crisis management, I believe in the power of discussion, negotiation, and innovative thinking. Through Horizon MUN, I aspire to create an engaging platform where young minds can challenge perspectives, develop leadership skills, and discover their potential as future decision-makers.',
-    highlights: [
-      'Dedicated MUN Circuit Enthusiast & Experienced Committee Strategist',
-      'Specialist in Geopolitical Negotiations, Public Speaking & Crisis Governance',
-      'Architect of Engaging, Real-Time Dynamic Cabinet Simulations',
-      'Committed to Nurturing Next-Generation Global Decision-Makers',
-    ],
-    initials: 'CF',
+    highlights: [],
+    initials: 'AS',
     photo: './assets/aistudio/co_founder_0a58e130.jpeg', // Editable in Admin
   },
 ];
@@ -352,9 +376,7 @@ export const IMPORTANT_DATES = [
   { date: 'Active Now', event: 'Delegate Registration Live on Google Forms', status: 'Active' },
   { date: 'December 20, 2026', event: 'First Wave Portfolio & Country Allocations', status: 'Upcoming' },
   { date: 'December 28, 2026', event: 'Position Papers & Directives Dossier Deadline', status: 'Upcoming' },
-  { date: 'January 3, 2027', event: 'Summit Opening Ceremony & Session I', status: 'Milestone' },
-  { date: 'January 4, 2027', event: 'Crisis Midnight Updates & Parliamentary Bills', status: 'Milestone' },
-  { date: 'January 5, 2027', event: 'Grand Closing Plenary & Awards Gala', status: 'Milestone' },
+  { date: 'January 3, 2027', event: 'One-Day Summit: Opening Ceremony, Committee Sessions & Awards Gala', status: 'Milestone' },
 ];
 
 export const FAQS: FaqItem[] = [
@@ -386,7 +408,7 @@ export const FAQS: FaqItem[] = [
     id: 'faq-5',
     category: 'Logistics',
     question: 'When will the conference take place?',
-    answer: 'Horizon MUN convenes from January 3 to January 5, 2027, featuring both in-person grand chambers and verified virtual hybrid access for international delegates.',
+    answer: 'Horizon MUN convenes as a full-day, one-day conference on January 3, 2027, featuring both in-person grand chambers and verified virtual hybrid access for international delegates.',
   },
   {
     id: 'faq-6',

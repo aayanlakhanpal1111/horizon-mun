@@ -22,11 +22,12 @@ import {
   Share2,
   Sparkles,
   Link,
-  UserCheck
+  UserCheck,
+  Globe
 } from 'lucide-react';
 import { useConference } from '../context/ConferenceContext';
 import HorizonLogo from './HorizonLogo';
-import { Committee, DEFAULT_EXPERIENCE_IMAGE, FaqItem } from '../data/conferenceData';
+import { Committee, DEFAULT_EXPERIENCE_IMAGE, DEFAULT_GLOBE_SETTINGS, FaqItem } from '../data/conferenceData';
 
 interface AdminDashboardProps {
   onBackToSite: () => void;
@@ -40,6 +41,7 @@ export default function AdminDashboard({ onBackToSite }: AdminDashboardProps) {
     experienceItems,
     faqs,
     importantDates,
+    globeSettings,
     updateBrandData,
     updateFounder,
     updateCommittee,
@@ -50,6 +52,7 @@ export default function AdminDashboard({ onBackToSite }: AdminDashboardProps) {
     addFaq,
     deleteFaq,
     updateImportantDate,
+    updateGlobeSettings,
     resetToDefaults,
   } = useConference();
 
@@ -60,7 +63,7 @@ export default function AdminDashboard({ onBackToSite }: AdminDashboardProps) {
   const [passwordInput, setPasswordInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState('');
-  const [activeTab, setActiveTab] = useState<'general' | 'committees' | 'founders' | 'photos' | 'timeline' | 'faqs'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'founders' | 'globe' | 'committees' | 'photos' | 'timeline' | 'faqs'>('general');
   const [saveToast, setSaveToast] = useState<string | null>(null);
 
   // Form states for general & links
@@ -258,7 +261,19 @@ export default function AdminDashboard({ onBackToSite }: AdminDashboardProps) {
             }`}
           >
             <Users className="w-3.5 h-3.5" />
-            <span>Founders Text & Photos</span>
+            <span>Founders Names &amp; Photos</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('globe')}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              activeTab === 'globe'
+                ? 'bg-[#D6B875] text-[#08090D] shadow-md'
+                : 'text-[#F5F1E8]/70 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Globe className="w-3.5 h-3.5" />
+            <span>3D Globe Settings</span>
           </button>
 
           <button
@@ -525,6 +540,38 @@ export default function AdminDashboard({ onBackToSite }: AdminDashboardProps) {
                     className="w-full bg-[#08090D] border border-white/20 focus:border-[#D6B875] rounded-xl px-4 py-3 text-xs text-white focus:outline-none"
                   />
                 </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#D6B875] mb-2">
+                    About Horizon MUN Text
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={localBrand.aboutText || ''}
+                    onChange={(e) =>
+                      setLocalBrand({ ...localBrand, aboutText: e.target.value })
+                    }
+                    className="w-full bg-[#08090D] border border-white/20 focus:border-[#D6B875] rounded-xl px-4 py-3 text-xs text-white focus:outline-none leading-relaxed"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#D6B875] mb-2">
+                    Official Logo Image URL
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 rounded-xl bg-[#08090D] border border-[#D6B875]/35 shrink-0">
+                      <HorizonLogo size="sm" showText={false} />
+                    </div>
+                    <input
+                      type="text"
+                      value={localBrand.logoUrl || ''}
+                      onChange={(e) => setLocalBrand({ ...localBrand, logoUrl: e.target.value })}
+                      placeholder="./assets/aistudio/..."
+                      className="w-full bg-[#08090D] border border-white/20 focus:border-[#D6B875] rounded-xl px-4 py-3 text-xs text-white focus:outline-none font-mono"
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="mt-8 pt-6 border-t border-white/10 flex justify-end">
@@ -603,28 +650,46 @@ export default function AdminDashboard({ onBackToSite }: AdminDashboardProps) {
                       </div>
                     </div>
 
-                    <div className="mb-4">
-                      <label className="block text-[11px] font-semibold text-[#D6B875] uppercase mb-1">
-                        Experience Badge
-                      </label>
-                      <input
-                        type="text"
-                        value={f.experienceBadge}
-                        onChange={(e) =>
-                          updateFounder(f.id, { experienceBadge: e.target.value })
-                        }
-                        className="w-full bg-[#08090D] border border-white/20 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#D6B875]"
-                      />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-[11px] font-semibold text-[#D6B875] uppercase mb-1">
+                          Full Name *
+                        </label>
+                        <input
+                          type="text"
+                          value={f.name || ''}
+                          onChange={(e) =>
+                            updateFounder(f.id, { name: e.target.value })
+                          }
+                          placeholder={`Enter ${f.role} name`}
+                          className="w-full bg-[#08090D] border border-white/20 rounded-lg p-2.5 text-xs text-white font-semibold focus:outline-none focus:border-[#D6B875]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-[#D6B875] uppercase mb-1">
+                          Designation
+                        </label>
+                        <input
+                          type="text"
+                          value={f.role}
+                          onChange={(e) =>
+                            updateFounder(f.id, { role: e.target.value, title: e.target.value })
+                          }
+                          className="w-full bg-[#08090D] border border-white/20 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#D6B875]"
+                        />
+                      </div>
                     </div>
 
                     <div className="mb-6">
                       <label className="block text-[11px] font-semibold text-[#D6B875] uppercase mb-1">
-                        Official Statement *
+                        Biography / Statement (Optional)
                       </label>
                       <textarea
-                        rows={7}
+                        rows={6}
                         value={f.statement}
                         onChange={(e) => updateFounder(f.id, { statement: e.target.value })}
+                        placeholder="Optional biography or statement..."
                         className="w-full bg-[#08090D] border border-white/20 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-[#D6B875] leading-relaxed"
                       />
                     </div>
@@ -632,7 +697,7 @@ export default function AdminDashboard({ onBackToSite }: AdminDashboardProps) {
 
                   <div className="pt-4 border-t border-white/10 flex justify-end">
                     <button
-                      onClick={() => showNotification(`Updated details & photo for ${f.role}`)}
+                      onClick={() => showNotification(`Updated details & photo for ${f.name || f.role}`)}
                       className="px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-[#08090D] bg-[#D6B875] hover:bg-[#F2DEAA] rounded-lg transition-all cursor-pointer"
                     >
                       Save {f.role}
@@ -640,6 +705,153 @@ export default function AdminDashboard({ onBackToSite }: AdminDashboardProps) {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 2B: 3D EARTH GLOBE SETTINGS */}
+        {activeTab === 'globe' && (
+          <div className="space-y-8 animate-fadeIn">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-serif font-bold text-white mb-1 flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-[#D6B875]" />
+                  <span>Interactive 3D Earth Globe Settings</span>
+                </h3>
+                <p className="text-xs text-[#F5F1E8]/70">
+                  Customize rotation, country borders, national flags, atmosphere, stars, and camera zoom behavior live.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  updateGlobeSettings(DEFAULT_GLOBE_SETTINGS);
+                  showNotification('3D Globe settings restored to defaults');
+                }}
+                className="px-4 py-2 text-xs font-semibold text-[#D6B875] bg-[#101C35] hover:bg-[#641E35]/50 border border-[#D6B875]/35 rounded-lg transition-colors cursor-pointer self-start"
+              >
+                Reset Globe Defaults
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Visual Layer Toggles */}
+              <div className="p-8 rounded-3xl bg-[#101C35]/70 border border-[#D6B875]/30 space-y-4">
+                <h4 className="text-sm font-bold uppercase tracking-wider text-[#D6B875] mb-3">
+                  Globe Layers &amp; Interactions
+                </h4>
+
+                {(
+                  [
+                    { key: 'autoRotate', label: 'Continuous Auto-Rotation', desc: 'Smoothly spin the Earth when idle' },
+                    { key: 'showCountryBorders', label: 'Visible Country Borders', desc: 'Render crisp vector borders over continents' },
+                    { key: 'showFlags', label: 'National Flags on Globe', desc: 'Display geographically positioned nation flags' },
+                    { key: 'showAtmosphere', label: 'Atmospheric Rim Glow', desc: 'Luminous Fresnel atmospheric scattering halo' },
+                    { key: 'showStars', label: 'Celestial Starfield', desc: 'Subtle background starfield around Earth' },
+                    { key: 'enableZoom', label: 'Zoom In / Zoom Out Controls', desc: 'Allow mouse wheel, pinch, and +/- zoom controls' },
+                  ] as const
+                ).map((item) => (
+                  <label
+                    key={item.key}
+                    className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-[#08090D]/75 border border-white/10 cursor-pointer hover:border-[#D6B875]/40 transition-colors"
+                  >
+                    <div>
+                      <span className="text-xs font-bold text-white block">{item.label}</span>
+                      <span className="text-[11px] text-[#F5F1E8]/60">{item.desc}</span>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={Boolean(globeSettings[item.key])}
+                      onChange={(e) => updateGlobeSettings({ [item.key]: e.target.checked })}
+                      className="w-4 h-4 accent-[#D6B875] cursor-pointer"
+                    />
+                  </label>
+                ))}
+              </div>
+
+              {/* Numeric Sliders & Colors */}
+              <div className="p-8 rounded-3xl bg-[#101C35]/70 border border-[#D6B875]/30 space-y-6">
+                <h4 className="text-sm font-bold uppercase tracking-wider text-[#D6B875] mb-3">
+                  Camera &amp; Motion Tuning
+                </h4>
+
+                <div>
+                  <div className="flex justify-between text-xs mb-2">
+                    <span className="font-semibold text-white">Rotation Speed</span>
+                    <span className="font-mono text-[#D6B875]">{globeSettings.rotationSpeed.toFixed(2)}x</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0.05"
+                    max="1.5"
+                    step="0.05"
+                    value={globeSettings.rotationSpeed}
+                    onChange={(e) => updateGlobeSettings({ rotationSpeed: parseFloat(e.target.value) })}
+                    className="w-full accent-[#D6B875] cursor-pointer"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs mb-2">
+                    <span className="font-semibold text-white">Full Globe Camera Distance</span>
+                    <span className="font-mono text-[#D6B875]">{globeSettings.initialZoom.toFixed(1)}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="4.2"
+                    max="8.0"
+                    step="0.1"
+                    value={globeSettings.initialZoom}
+                    onChange={(e) => updateGlobeSettings({ initialZoom: parseFloat(e.target.value) })}
+                    className="w-full accent-[#D6B875] cursor-pointer"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs mb-2">
+                    <span className="font-semibold text-white">Country Focus Zoom Distance</span>
+                    <span className="font-mono text-[#D6B875]">{globeSettings.focusZoom.toFixed(1)}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="3.0"
+                    max="5.2"
+                    step="0.1"
+                    value={globeSettings.focusZoom}
+                    onChange={(e) => updateGlobeSettings({ focusZoom: parseFloat(e.target.value) })}
+                    className="w-full accent-[#D6B875] cursor-pointer"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-white mb-2">
+                    Border &amp; Country Highlight Color
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={globeSettings.highlightColor}
+                      onChange={(e) => updateGlobeSettings({ highlightColor: e.target.value })}
+                      className="w-10 h-10 rounded-lg border border-white/20 bg-transparent cursor-pointer"
+                    />
+                    <input
+                      type="text"
+                      value={globeSettings.highlightColor}
+                      onChange={(e) => updateGlobeSettings({ highlightColor: e.target.value })}
+                      className="flex-1 bg-[#08090D] border border-white/20 rounded-lg p-2.5 text-xs text-white font-mono focus:outline-none focus:border-[#D6B875]"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-white/10 flex justify-end">
+                  <button
+                    onClick={() => showNotification('3D Globe settings saved and applied live')}
+                    className="px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-[#08090D] bg-[#D6B875] hover:bg-[#F2DEAA] rounded-lg transition-all cursor-pointer flex items-center gap-2"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>Save Globe Settings</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}

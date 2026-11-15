@@ -6,11 +6,13 @@ import {
   EXPERIENCE_ITEMS as DEFAULT_EXPERIENCE_ITEMS,
   FAQS as DEFAULT_FAQS,
   IMPORTANT_DATES as DEFAULT_IMPORTANT_DATES,
+  DEFAULT_GLOBE_SETTINGS,
   LEGACY_IMAGE_MAP,
   Committee,
   FounderProfile,
   ExperienceItem,
   FaqItem,
+  GlobeSettings,
 } from '../data/conferenceData';
 
 interface ConferenceContextType {
@@ -20,6 +22,7 @@ interface ConferenceContextType {
   experienceItems: ExperienceItem[];
   faqs: FaqItem[];
   importantDates: Array<{ date: string; event: string; status: string }>;
+  globeSettings: GlobeSettings;
   updateBrandData: (newData: Partial<typeof DEFAULT_BRAND_DATA>) => void;
   updateFounder: (id: string, updated: Partial<FounderProfile>) => void;
   updateCommittee: (id: string, updated: Partial<Committee>) => void;
@@ -30,6 +33,7 @@ interface ConferenceContextType {
   addFaq: (faq: FaqItem) => void;
   deleteFaq: (id: string) => void;
   updateImportantDate: (index: number, updated: { date: string; event: string; status: string }) => void;
+  updateGlobeSettings: (updated: Partial<GlobeSettings>) => void;
   resetToDefaults: () => void;
 }
 
@@ -41,7 +45,18 @@ export function ConferenceProvider({ children }: { children: React.ReactNode }) 
   const [brandData, setBrandData] = useState<typeof DEFAULT_BRAND_DATA>(() => {
     try {
       const saved = localStorage.getItem(`${STORAGE_KEY}_BRAND`);
-      return saved ? { ...DEFAULT_BRAND_DATA, ...JSON.parse(saved) } : DEFAULT_BRAND_DATA;
+      if (!saved) return DEFAULT_BRAND_DATA;
+      const parsed = { ...DEFAULT_BRAND_DATA, ...JSON.parse(saved) };
+      if (parsed.dates === 'January 3 – 5, 2027') {
+        parsed.dates = DEFAULT_BRAND_DATA.dates;
+      }
+      if (!parsed.logoUrl) {
+        parsed.logoUrl = DEFAULT_BRAND_DATA.logoUrl;
+      }
+      if (!parsed.aboutText) {
+        parsed.aboutText = DEFAULT_BRAND_DATA.aboutText;
+      }
+      return parsed;
     } catch {
       return DEFAULT_BRAND_DATA;
     }
@@ -54,8 +69,20 @@ export function ConferenceProvider({ children }: { children: React.ReactNode }) 
       const parsed: FounderProfile[] = JSON.parse(saved);
       return parsed.map((f) => {
         const def = DEFAULT_FOUNDERS.find((d) => d.id === f.id);
+        // If migrating from an older schema without `name`, sync name & remove old invented badges/highlights
+        if (!f.name && def) {
+          return {
+            ...f,
+            name: def.name,
+            title: def.title,
+            experienceBadge: '',
+            highlights: [],
+            photo: f.photo || def.photo || '',
+          };
+        }
         return {
           ...f,
+          name: f.name || def?.name || '',
           photo: f.photo || def?.photo || '',
         };
       });
@@ -90,7 +117,13 @@ export function ConferenceProvider({ children }: { children: React.ReactNode }) 
   const [faqs, setFaqs] = useState<FaqItem[]>(() => {
     try {
       const saved = localStorage.getItem(`${STORAGE_KEY}_FAQS`);
-      return saved ? JSON.parse(saved) : DEFAULT_FAQS;
+      if (!saved) return DEFAULT_FAQS;
+      const parsed: FaqItem[] = JSON.parse(saved);
+      return parsed.map((faq) =>
+        faq.id === 'faq-5' && faq.answer.includes('January 3 to January 5, 2027')
+          ? { ...faq, answer: DEFAULT_FAQS.find((d) => d.id === 'faq-5')?.answer || faq.answer }
+          : faq
+      );
     } catch {
       return DEFAULT_FAQS;
     }
@@ -99,9 +132,23 @@ export function ConferenceProvider({ children }: { children: React.ReactNode }) 
   const [importantDates, setImportantDates] = useState<Array<{ date: string; event: string; status: string }>>(() => {
     try {
       const saved = localStorage.getItem(`${STORAGE_KEY}_DATES`);
-      return saved ? JSON.parse(saved) : DEFAULT_IMPORTANT_DATES;
+      if (!saved) return DEFAULT_IMPORTANT_DATES;
+      const parsed: Array<{ date: string; event: string; status: string }> = JSON.parse(saved);
+      const hasLegacyMultiDay = parsed.some(
+        (d) => d.date === 'January 4, 2027' || d.date === 'January 5, 2027'
+      );
+      return hasLegacyMultiDay ? DEFAULT_IMPORTANT_DATES : parsed;
     } catch {
       return DEFAULT_IMPORTANT_DATES;
+    }
+  });
+
+  const [globeSettings, setGlobeSettings] = useState<GlobeSettings>(() => {
+    try {
+      const saved = localStorage.getItem(`${STORAGE_KEY}_GLOBE`);
+      return saved ? { ...DEFAULT_GLOBE_SETTINGS, ...JSON.parse(saved) } : DEFAULT_GLOBE_SETTINGS;
+    } catch {
+      return DEFAULT_GLOBE_SETTINGS;
     }
   });
 
@@ -114,10 +161,11 @@ export function ConferenceProvider({ children }: { children: React.ReactNode }) 
       localStorage.setItem(`${STORAGE_KEY}_EXPERIENCE`, JSON.stringify(experienceItems));
       localStorage.setItem(`${STORAGE_KEY}_FAQS`, JSON.stringify(faqs));
       localStorage.setItem(`${STORAGE_KEY}_DATES`, JSON.stringify(importantDates));
+      localStorage.setItem(`${STORAGE_KEY}_GLOBE`, JSON.stringify(globeSettings));
     } catch (e) {
       console.error('Failed to sync to localStorage', e);
     }
-  }, [brandData, founders, committees, experienceItems, faqs, importantDates]);
+  }, [brandData, founders, committees, experienceItems, faqs, importantDates, globeSettings]);
 
   const updateBrandData = (newData: Partial<typeof DEFAULT_BRAND_DATA>) => {
     setBrandData((prev) => ({ ...prev, ...newData }));
@@ -174,6 +222,10 @@ export function ConferenceProvider({ children }: { children: React.ReactNode }) 
     });
   };
 
+  const updateGlobeSettings = (updated: Partial<GlobeSettings>) => {
+    setGlobeSettings((prev) => ({ ...prev, ...updated }));
+  };
+
   const resetToDefaults = () => {
     setBrandData(DEFAULT_BRAND_DATA);
     setFounders(DEFAULT_FOUNDERS);
@@ -181,6 +233,7 @@ export function ConferenceProvider({ children }: { children: React.ReactNode }) 
     setExperienceItems(DEFAULT_EXPERIENCE_ITEMS);
     setFaqs(DEFAULT_FAQS);
     setImportantDates(DEFAULT_IMPORTANT_DATES);
+    setGlobeSettings(DEFAULT_GLOBE_SETTINGS);
     localStorage.clear();
   };
 
@@ -193,6 +246,7 @@ export function ConferenceProvider({ children }: { children: React.ReactNode }) 
         experienceItems,
         faqs,
         importantDates,
+        globeSettings,
         updateBrandData,
         updateFounder,
         updateCommittee,
@@ -203,6 +257,7 @@ export function ConferenceProvider({ children }: { children: React.ReactNode }) 
         addFaq,
         deleteFaq,
         updateImportantDate,
+        updateGlobeSettings,
         resetToDefaults,
       }}
     >
